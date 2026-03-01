@@ -36,4 +36,38 @@ async function registerUser(req,res){
 
 }
 
-module.exports ={registerUser}
+async function loginUser(req,res){
+    const{email,password}= req.body
+
+    const user = await userModel.findOne({
+        email
+    })
+    if(!user){
+        res.status(400).json({
+            message: "Invalid Email or password!!"
+        })
+
+    const ispasswordValid = await bcrypt.compare(password, user.password);
+
+    if(!ispasswordValid){
+        return res.status(400).json({
+            message:"Invalid Email or password!"
+        })
+    }
+    }
+    const token = jwt.sign({
+        id: user._id,
+    },process.env.jwt_secret)
+    res.cookie("token",token)
+
+    res.status(200).json({
+        message: "User LogedIn sucessfully!",
+        user: {
+            _id : user._id,
+            email:user.email,
+            fullname: user.fullname
+        }
+    })
+}
+
+module.exports ={registerUser,loginUser}
