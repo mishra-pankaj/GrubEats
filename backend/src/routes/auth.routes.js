@@ -1,7 +1,7 @@
 const express = require("express")
-
+const authController = require("../controllers/auth.controller.js")
 const router = express.Router()
 
-router.post("/register",)
+router.post("/user/register",authController.registerUser)
 
-module.export = router
+module.exports = router
